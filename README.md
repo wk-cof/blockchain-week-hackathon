@@ -20,10 +20,13 @@ Then go visit http://localhost:8000
 - [CORS](https://github.com/expressjs/cors) - Cross-origin resource sharing (CORS) middleware.
 - [Helmet.js](https://helmetjs.github.io/) - Security with HTTP headers.
 - [Request](https://github.com/request/request) - Simplified HTTP request client.
+- [Bunyan](https://github.com/trentm/node-bunyan) - Simple and fast JSON logging library for Node
 2. Front-end:
 - [Vue.js](https://vuejs.org/) - Rendering framework, similar to React
 - Bootstrap
 - jQuery
+3. Miscellaneous:
+- [Socket.io](https://socket.io/) - easy web-sockets implementation
 
 ## License
 
