@@ -1,42 +1,42 @@
-//socket.io setup
-var socket = io();
-socket.on('connect', function () {
-	console.log('connected to server.');
-	socket.emit('newword', 'Hello! I am a new client testing out messaging.');
+// socket.io setup
+const socket = io();
+socket.on('connect', () => {
+  console.log('connected to server.');
+  socket.emit('newword', 'Hello! I am a new client testing out messaging.');
 });
-socket.on('disconnect', function () {
-	console.log('disconnected.');
-});
-
-//NOTE: websockets do not guarantee that info arrives in same order it was sent
-//nor does server send info in series in order
-socket.on('data', function (data) {
-	//console.log(data);
-	draw(data.num, data.palette);
+socket.on('disconnect', () => {
+  console.log('disconnected.');
 });
 
-
-$(document).ready(function () {
-	// dom loaded
+// NOTE: websockets do not guarantee that info arrives in same order it was sent
+// nor does server send info in series in order
+socket.on('data', (data) => {
+	// console.log(data);
+  draw(data.num, data.palette);
 });
 
-var getdata1 = function () {
-	return ['hello', 'bye'];
-}
 
-var getdata2 = function () {
-	var arr = [];
-	for (var i = 0; i < 10; i++) {
-		arr.push(i);
-	}
-	return arr;
-}
+$(document).ready(() => {
+// dom loaded
+});
+
+const getdata1 = function () {
+  return ['hello', 'bye'];
+};
+
+const getdata2 = function () {
+  const arr = [];
+  for (let i = 0; i < 10; i += 1) {
+    arr.push(i);
+  }
+  return arr;
+};
 
 // vue.js
-var app = new Vue({
-	el: '#app',
-	data: {
-		collection: getdata1(),
-		otherstuff: getdata2()
-	}
+const app = new Vue({
+  el: '#app',
+  data: {
+    collection: getdata1(),
+    otherstuff: getdata2(),
+  },
 });
