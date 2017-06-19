@@ -19,41 +19,43 @@ app.use(express.static(__dirname + '/public'));
 
 //bunyan for logging
 var bunyan = require('bunyan');
-var log = bunyan.createLogger({name: "MyApp"});
+var log = bunyan.createLogger({
+	name: "MyApp"
+});
 
 
 //use 'body-parser' middleware for post
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({
-  extended: false
+	extended: false
 }));
 app.use(bodyParser.json({
-  extended: false
+	extended: false
 }));
 
 server.listen(port, function () {
-  log.info('Listening on port ' + port);
+	log.info('Listening on port ' + port);
 });
 
-function processWord(word, socket){
-  
+function processWord(word, socket) {
+
 }
 
 
 io.on('connection', function (socket) {
-  log.info('new connection.');
-  // emit an event to the socket
-  //socket.emit('request', data);
-  // emit an event to all connected sockets
-  //io.emit('broadcast', data);
-  // listen to the event
-  socket.on('newword', function (word) {
-    log.info(word);
-    processWord(word, socket);
-  });
-  socket.on('disconnect', function (e) {
-    log.info('user disconnected.');
-  })
+	log.info('new connection.');
+	// emit an event to the socket
+	//socket.emit('request', data);
+	// emit an event to all connected sockets
+	//io.emit('broadcast', data);
+	// listen to the event
+	socket.on('newword', function (word) {
+		log.info(word);
+		processWord(word, socket);
+	});
+	socket.on('disconnect', function (e) {
+		log.info('user disconnected.');
+	})
 });
 
 /*
