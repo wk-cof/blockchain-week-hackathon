@@ -1,7 +1,7 @@
 
 # Express-Boilerplate
 
-A fast :fast_forward:, simple express web app boilerplate project. Hopefully useful for hackathons... :pray: :zap: 
+A fast :fast_forward:, simple Node.js/Express web app boilerplate project. This template provides a set of best-practice setups and avoids common mistakes. Hopefully useful for hackathons... :pray: :zap: 
 
 ## Quickstart
 
@@ -24,16 +24,14 @@ Then go visit http://localhost:8000
 - [Request](https://github.com/request/request) - Simplified HTTP request client.
 - [Bunyan](https://github.com/trentm/node-bunyan) - Simple and fast JSON logging.
 2. **Front-end:**
-- [Vue.js](https://vuejs.org/) - Rendering framework, similar to React
-- Bootstrap
-- jQuery
+- [Vue.js](https://vuejs.org/) + [bootstrap-vue](https://github.com/bootstrap-vue/bootstrap-vue)
 3. **Miscellaneous:**
 - [Socket.io](https://socket.io/) - easy web-sockets implementation
 - [Eslint](http://eslint.org/) - linting
 
 
 ## Dev
-Linting with [AirBnB's style guide](https://github.com/airbnb/javascript):
+Code linting with [AirBnB's style guide](https://github.com/airbnb/javascript):
 ```
 $ npm run lint
 ```
