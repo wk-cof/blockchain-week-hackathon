@@ -10,27 +10,92 @@
 	<title>Title</title>
 	<link rel="icon" href="favicon.ico">
 	<!-- bootstrap minified CSS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap@next/dist/css/bootstrap.min.css" />
+	<link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
 	<!-- fonts -->
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto:300" rel="stylesheet">
 </head>
 
 <body>
 	<div id='app'>
-		Title
-		<button>Button</button>
+		<b-navbar toggleable type="inverse" variant="success">
 
+			<b-nav-toggle target="nav_collapse"></b-nav-toggle>
+
+			<b-link class="navbar-brand" to="#">
+				<span><h1>AppTitle</h1></span>
+			</b-link>
+
+			<b-collapse is-nav id="nav_collapse">
+
+				<b-nav is-nav-bar>
+					<b-nav-item>Support</b-nav-item>
+					<b-nav-item>Docs</b-nav-item>
+					<b-nav-item>Contact Us</b-nav-item>
+				</b-nav>
+
+				<b-nav is-nav-bar class="ml-auto">
+
+					<!-- Navbar dropdowns -->
+					<b-nav-item-dropdown text="Settings" right>
+						<b-dropdown-item to="#">A</b-dropdown-item>
+						<b-dropdown-item to="#">B</b-dropdown-item>
+						<b-dropdown-item to="#">C</b-dropdown-item>
+						<b-dropdown-item to="#">D</b-dropdown-item>
+					</b-nav-item-dropdown>
+
+					<b-nav-item-dropdown right>
+
+						<!-- Using text slot -->
+						<template slot="text">
+							<span style="font-weight: bold;">User</span>
+						</template>
+
+						<b-dropdown-item to="#">Profile</b-dropdown-item>
+						<b-dropdown-item to="#">Signout</b-dropdown-item>
+					</b-nav-item-dropdown>
+
+				</b-nav>
+			</b-collapse>
+		</b-navbar>
+		<div id='non-navbar'>
+			<h2>PageTitle</h2>
+
+			<div id='cardfeed'>
+				<!-- Simple -->
+				<b-card class="mb-2" variant="success">Simple Card
+					<br></br>
+					<b-button>Button</b-button>
+				</b-card>
+
+				<!-- Standard -->
+				<b-card header="Card header text" class="mb-2" title="Card title" sub-title="Card subtitle" show-footer>
+					<small slot="footer" class="text-muted">
+            Last updated 3 mins ago
+        </small>
+				</b-card>
+
+				<!-- With image -->
+				<b-card img="http://placeskull.com/200/200/ABABAB/-1/0" title="Skulls are nice" class="mb-2">
+					This is my opinion :)
+				</b-card>
+
+				<!-- Overlay image -->
+				<b-card overlay img="http://placeskull.com/200/200/E8117F/-1/0" class="mb-2">
+					Overlay cards are cute!
+				</b-card>
+			</div>
+		</div>
 	</div>
 
-	<!-- jQuery -->
-	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-	  crossorigin="anonymous"></script>
-	<!-- bootstrap minified JavaScript -->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<!-- Vue.js -->
-	<script src='https://unpkg.com/vue'></script>
+	<!-- Vue.js + bootstrap-vue(doesn't require jquery+bootstrap) -->
+	<script src="https://unpkg.com/vue"></script>
+	<script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
+	<script src="https://unpkg.com/tether@latest/dist/js/tether.min.js"></script>
+	<script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
 	<!-- socket.io client-side -->
-	<script src='socket.io.min.js'></script>
+	<script src='lib/socket.io.min.js'></script>
+	<script src='lib/zepto.min.js'></script>
 	<!-- custom js -->
 	<script src='index.js'></script>
 </body>
@@ -38,24 +103,31 @@
 </html>
 
 <style>
-	div {
+	body {
 		background: #eef2f3;
 		/* fallback for old browsers */
-		background: -webkit-linear-gradient(to bottom, #eef2f3, #cececb);
+		/*background: -webkit-linear-gradient(to bottom, #eef2f3, #cececb);*/
 		/* Chrome 10-25, Safari 5.1-6 */
-		background: linear-gradient(to bottom, #eef2f3, #cececb);
+		/*background: linear-gradient(to bottom, #eef2f3, #cececb);*/
 		/* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 		/*background: no-repeat center center fixed;*/
-		min-height: 100%;
+		/*min-height: 100%;*/
+	}
+	#non-navbar{
+		padding-left: 2em;
+	}
+
+	#cardfeed {
+		width: 50%;
 	}
 
 	body {
 		font-family: 'Open Sans', sans-serif;
 		font-size: 16pt;
-		/*background-color: #e6e6e6;*/
-		padding-left: 1em;
+		background-color: #eef2f3;
+		/*padding-left: 1em;*/
 	}
-
+	/*
 	input,
 	button {
 		font-family: 'Roboto', sans-serif;
@@ -77,4 +149,5 @@
 	button:hover {
 		border-color: blue;
 	}
+	*/
 </style>

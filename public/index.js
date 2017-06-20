@@ -33,7 +33,7 @@ const getdata2 = function () {
 };
 
 // vue.js
-const app = new Vue({
+window.app = new Vue({
   el: '#app',
   data: {
     collection: getdata1(),
