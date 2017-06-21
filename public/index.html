@@ -76,12 +76,12 @@
 				</b-card>
 
 				<!-- With image -->
-				<b-card img="http://placeskull.com/200/200/ABABAB/-1/0" title="Skulls are nice" class="mb-2">
+				<b-card img="/lib/placeholder-skull.svg" title="Skulls are nice" class="mb-2">
 					This is my opinion :)
 				</b-card>
 
 				<!-- Overlay image -->
-				<b-card overlay img="http://placeskull.com/200/200/E8117F/-1/0" class="mb-2">
+				<b-card overlay img="/lib/placeholder-skull.svg" class="mb-2">
 					Overlay cards are cute!
 				</b-card>
 			</div>
@@ -89,9 +89,10 @@
 	</div>
 
 	<!-- Vue.js + bootstrap-vue(doesn't require jquery+bootstrap) -->
-	<script src="https://unpkg.com/vue"></script>
-	<script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
-	<script src="https://unpkg.com/tether@latest/dist/js/tether.min.js"></script>
+	<!-- cdn.js is CONSIDERABLY FASTER than unpkg -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.3.0/vue.min.js"></script>
+	<script async src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.23.0/polyfill.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
 	<script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
 	<!-- socket.io client-side -->
 	<script src='lib/socket.io.min.js'></script>
@@ -113,7 +114,8 @@
 		/*background: no-repeat center center fixed;*/
 		/*min-height: 100%;*/
 	}
-	#non-navbar{
+
+	#non-navbar {
 		padding-left: 2em;
 	}
 
