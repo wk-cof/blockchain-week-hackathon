@@ -18,8 +18,24 @@ const server = require('http').Server(app);
 // socket.io
 const io = require('socket.io').listen(server);
 
+
+// bunyan logger filters json log content into several places...
 const log = bunyan.createLogger({
-  name: 'MyApp',
+  name: 'github-loc',
+  streams: [
+    {
+      level: 'info',
+      stream: process.stdout,
+    },
+    {
+      level: 'error',
+      path: './logs/bunyan-error.log',
+    },
+    {
+      level: 'debug',
+      path: './logs/bunyan-debug.log',
+    },
+  ],
 });
 
 // serves all static files in /public
@@ -44,6 +60,7 @@ function processWord(word, socket) {
 
 io.on('connection', (socket) => {
   log.info('new connection.');
+
 // emit an event to the socket
 // socket.emit('request', data);
 // emit an event to all connected sockets
