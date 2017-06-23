@@ -4,7 +4,7 @@
   "description": "A fast, simple express web app boilerplate project.",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "nodemon server.js --ignore public/**",
     "test": "echo \"Error: no test specified\" && exit 1",
 		"lint": "eslint --fix **/*.js"
   },
