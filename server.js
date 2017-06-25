@@ -1,3 +1,5 @@
+'use strict';
+
 // express web server
 // protected with helmet.js
 const express = require('express');
