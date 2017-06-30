@@ -5,8 +5,6 @@ A fast :fast_forward:, simple Node.js/Express web app boilerplate project. This 
 
 ## Quickstart
 
-Usage explanation goes here
-
 ```
 $ git clone https://github.com/cktang88/express-boilerplate
 $ npm install --dev
@@ -16,18 +14,19 @@ Then go visit http://localhost:8000
 
 ## Batteries included.
 
-1. **Back-end:**
-- Node + [Express](https://github.com/expressjs/express) - Fast, unopinionated, minimalist web framework for node.
+1. ### Back-end
+- [Express](https://github.com/expressjs/express) - Fast, unopinionated, minimalist web framework for Node.js
 - [Nodemon](https://nodemon.io/) - Automatic server reload.
 - [CORS](https://github.com/expressjs/cors) - Cross-origin resource sharing (CORS) middleware.
 - [Helmet.js](https://helmetjs.github.io/) - Security with HTTP headers.
-- [Request](https://github.com/request/request) - Simplified HTTP request client.
-- [Bunyan](https://github.com/trentm/node-bunyan) - Simple and fast JSON logging.
-2. **Front-end:**
+- [Request-promise](https://github.com/request/request-promise) - Simple HTTP requests, with modern ES6 promises.
+- [Bunyan](https://github.com/trentm/node-bunyan) - Easy JSON logging.
+- [Monk](https://github.com/Automattic/monk) - Tiny useful layer over MongoDB.
+2. ### Front-end
 - [Vue.js](https://vuejs.org/) + [bootstrap-vue](https://github.com/bootstrap-vue/bootstrap-vue)
-3. **Miscellaneous:**
-- [Socket.io](https://socket.io/) - easy web-sockets implementation
-- [Eslint](http://eslint.org/) - linting
+3. ### Extra
+- [Socket.io](https://socket.io/) - Simple client-server communication
+- [Eslint](http://eslint.org/) - Javascript linting
 
 
 ## Dev
