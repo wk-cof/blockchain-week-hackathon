@@ -13,9 +13,8 @@ socket.on('disconnect', () => {
 
 // NOTE: websockets do not guarantee that info arrives in same order it was sent
 // nor does server send info in series in order
-socket.on('data', (data) => {
-	// console.log(data);
-  draw(data.num, data.palette);
+socket.on('message', (data) => {
+  console.log(data);
 });
 
 
@@ -41,5 +40,17 @@ window.app = new Vue({
   data: {
     collection: getdata1(),
     otherstuff: getdata2(),
+  },
+  filter: {
+
+  },
+  computed: {
+
+  },
+  watch: {
+
+  },
+  methods: {
+
   },
 });

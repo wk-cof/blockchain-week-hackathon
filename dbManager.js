@@ -1,13 +1,13 @@
 /* uses Monk as layer over MongoDB */
 
 // Why use Monk:
-// 1. syntactic sugar (combines a lot of similar mongo default functions into more general functions)
-// 2. works with promises
-// 3. has plug-n-play middleware
+// 1. nice syntax (combines similar mongo default functions into more general functions)
+// 2. promise-compatible
+// 3. has middleware plugins
 
-'use strict'
+'use strict';
 
-// Connection 
+// Connection
 const user = process.env.user;
 const password = process.env.password;
 const dbname = process.env.db_name;
@@ -18,7 +18,6 @@ const log = console.log;
 
 let db = {};
 /* sample db workflow */
-/*
 require('monk')(url).then((adb) => {
   try {
     // drop db by connecting to underlying db instance
@@ -32,17 +31,16 @@ require('monk')(url).then((adb) => {
   log(`Connected to mongodb at ${url}`);
   // collection
   return db.get('bios-sample-data');
-}).then(col => {
+}).then((col) => {
   col.remove({});
   return col;
-}).then(col => {
+}).then((col) => {
   log('Collection cleared.');
   const arr = [];
   return col.insert(arr);
-}).then(col => {
+}).then((col) => {
   log(`Inserted ${col.length} docs into collection.`);
 }).then(() => {
   db.close();
   log('db closed successfully.');
 });
-*/

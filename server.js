@@ -6,10 +6,11 @@ const express = require('express');
 const helmet = require('helmet');
 // currently enables all cors requests
 const cors = require('cors');
-// use 'body-parser' middleware for post
-const bodyParser = require('body-parser');
+
 // bunyan for logging
 const bunyan = require('bunyan');
+
+const Promise = require('bluebird');
 
 const app = express();
 app.use(helmet());
@@ -17,13 +18,12 @@ app.use(cors());
 const port = process.env.PORT || 8000;
 const server = require('http').Server(app);
 
-// socket.io
-const io = require('socket.io').listen(server);
+// boilerplate version
+const version = `Express-Boilerplate v.${require('./package.json').version}`;
 
-
-// bunyan logger filters json log content into several places...
+// bunyan logger passes json log content to several places...
 const log = bunyan.createLogger({
-  name: 'github-loc',
+  name: 'general-log',
   streams: [{
     level: 'info',
     stream: process.stdout,
@@ -41,14 +41,10 @@ const log = bunyan.createLogger({
 
 // serves all static files in /public
 app.use(express.static(`${__dirname}/public`));
-app.use(bodyParser.urlencoded({
-  extended: false,
-}));
-app.use(bodyParser.json({
-  extended: false,
-}));
 
+// start server
 server.listen(port, () => {
+  console.log(version);
   log.info(`Listening on port ${port}`);
 });
 
@@ -58,15 +54,19 @@ function processWord(word, socket) {
   }
 }
 
+// SOCKET.IO
+const io = require('socket.io').listen(server);
 
 io.on('connection', (socket) => {
   log.info('new connection.');
 
   // emit an event to the socket
-  // socket.emit('request', data);
-  // emit an event to all connected sockets
+  socket.emit('message', version);
+
+  // emit an event to ALL connected sockets
   // io.emit('broadcast', data);
-  // listen to the event
+
+  // listen to events
   socket.on('newword', (word) => {
     log.info(word);
     processWord(word, socket);
@@ -74,6 +74,26 @@ io.on('connection', (socket) => {
   socket.on('disconnect', (e) => {
     log.info('user disconnected.');
   });
+});
+
+
+// 'body-parser' middleware for POST
+const bodyParser = require('body-parser');
+// create application/json parser
+const jsonParser = bodyParser.json();
+// create application/x-www-form-urlencoded parser
+const urlencodedParser = bodyParser.urlencoded({ extended: false });
+
+// POST /login gets urlencoded bodies
+app.post('/login', urlencodedParser, (req, res) => {
+  if (!req.body) return res.sendStatus(400);
+  res.send(`welcome, ${req.body.username}`);
+});
+
+// POST /api/users gets JSON bodies
+app.post('/api/users', jsonParser, (req, res) => {
+  if (!req.body) return res.sendStatus(400);
+  // create user in req.body
 });
 
 
