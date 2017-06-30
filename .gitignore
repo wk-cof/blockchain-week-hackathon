@@ -3,6 +3,12 @@
 /node_modules
 /logs
 
+# heroku
+**.env
+
+# npm/other misc. logs
+**.log
+
 
 # Windows image file caches
 Thumbs.db
