@@ -24,19 +24,18 @@ const io = require('socket.io').listen(server);
 // bunyan logger filters json log content into several places...
 const log = bunyan.createLogger({
   name: 'github-loc',
-  streams: [
-    {
-      level: 'info',
-      stream: process.stdout,
-    },
-    {
-      level: 'error',
-      path: './logs/bunyan-error.log',
-    },
-    {
-      level: 'debug',
-      path: './logs/bunyan-debug.log',
-    },
+  streams: [{
+    level: 'info',
+    stream: process.stdout,
+  },
+  {
+    level: 'error',
+    path: './logs/bunyan-error.log',
+  },
+  {
+    level: 'debug',
+    path: './logs/bunyan-debug.log',
+  },
   ],
 });
 
@@ -63,11 +62,11 @@ function processWord(word, socket) {
 io.on('connection', (socket) => {
   log.info('new connection.');
 
-// emit an event to the socket
-// socket.emit('request', data);
-// emit an event to all connected sockets
-// io.emit('broadcast', data);
-// listen to the event
+  // emit an event to the socket
+  // socket.emit('request', data);
+  // emit an event to all connected sockets
+  // io.emit('broadcast', data);
+  // listen to the event
   socket.on('newword', (word) => {
     log.info(word);
     processWord(word, socket);
@@ -77,13 +76,27 @@ io.on('connection', (socket) => {
   });
 });
 
+
 /*
-// use 'request' lib for simple http requests
-var request = require('request');
-request('http://www.google.com', function (error, response, body) {
-  log.error('error:', error); // Print the error if one occurred
-	// Print the response status code if a response was received
-  log.info('statusCode:', response && response.statusCode);
-  log.info('body:', body); // Print the HTML for the Google homepage.
-});
-*/
+// ex. using 'request-promise' to call JSON REST API
+var rp = require('request-promise');
+var options = {
+  uri: 'https://api.github.com/user/repos',
+  qs: {
+    access_token: 'xxxxx xxxxx' // -> uri + '?access_token=xxxxx%20xxxxx'
+  },
+  headers: {
+    // spoof user-agent
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
+  },
+  json: true // Automatically parses the JSON string in the response
+};
+
+rp(options)
+  .then(function (data) {
+    console.log('User has %d repos', repos.length);
+  })
+  .catch(function (err) {
+    // API call failed...
+  });
+  */
