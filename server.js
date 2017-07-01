@@ -7,10 +7,10 @@ const helmet = require('helmet');
 // currently enables all cors requests
 const cors = require('cors');
 
-// bunyan for logging
-const bunyan = require('bunyan');
-
 const Promise = require('bluebird');
+
+// custom logger
+const log = require('./logger.js');
 
 const app = express();
 app.use(helmet());
@@ -21,30 +21,12 @@ const server = require('http').Server(app);
 // boilerplate version
 const version = `Express-Boilerplate v.${require('./package.json').version}`;
 
-// bunyan logger passes json log content to several places...
-const log = bunyan.createLogger({
-  name: 'general-log',
-  streams: [{
-    level: 'info',
-    stream: process.stdout,
-  },
-  {
-    level: 'error',
-    path: './logs/bunyan-error.log',
-  },
-  {
-    level: 'debug',
-    path: './logs/bunyan-debug.log',
-  },
-  ],
-});
-
 // serves all static files in /public
 app.use(express.static(`${__dirname}/public`));
 
 // start server
 server.listen(port, () => {
-  console.log(version);
+  log.info(version);
   log.info(`Listening on port ${port}`);
 });
 
@@ -82,7 +64,9 @@ const bodyParser = require('body-parser');
 // create application/json parser
 const jsonParser = bodyParser.json();
 // create application/x-www-form-urlencoded parser
-const urlencodedParser = bodyParser.urlencoded({ extended: false });
+const urlencodedParser = bodyParser.urlencoded({
+  extended: false
+});
 
 // POST /login gets urlencoded bodies
 app.post('/login', urlencodedParser, (req, res) => {
