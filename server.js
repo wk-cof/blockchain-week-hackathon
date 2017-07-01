@@ -1,28 +1,23 @@
 'use strict';
 
-// express web server
-// protected with helmet.js
-const express = require('express');
-const helmet = require('helmet');
-// currently enables all cors requests
-const cors = require('cors');
-
 const Promise = require('bluebird');
 
 // custom logger
 const log = require('./logger.js');
 
+const express = require('express');
+
 const app = express();
-app.use(helmet());
-app.use(cors());
+
+app.use(require('helmet')()); // use helmet
+app.use(require('cors')()); // enable CORS
+// serves all static files in /public
+app.use(express.static(`${__dirname}/public`));
 const port = process.env.PORT || 8000;
 const server = require('http').Server(app);
 
 // boilerplate version
-const version = `Express-Boilerplate v.${require('./package.json').version}`;
-
-// serves all static files in /public
-app.use(express.static(`${__dirname}/public`));
+const version = `Express-Boilerplate v${require('./package.json').version}`;
 
 // start server
 server.listen(port, () => {
@@ -30,7 +25,7 @@ server.listen(port, () => {
   log.info(`Listening on port ${port}`);
 });
 
-function processWord(word, socket) {
+const processWord = (word, socket) => {
   if (!socket) {
     log.error('Socket is undefined.');
   }
@@ -65,7 +60,7 @@ const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
 // create application/x-www-form-urlencoded parser
 const urlencodedParser = bodyParser.urlencoded({
-  extended: false
+  extended: false,
 });
 
 // POST /login gets urlencoded bodies
