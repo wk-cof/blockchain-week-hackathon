@@ -1,46 +1,56 @@
-/* uses Monk as layer over MongoDB */
-
-// Why use Monk:
-// 1. nice syntax (combines similar mongo default functions into more general functions)
-// 2. promise-compatible
-// 3. has middleware plugins
+/* dbManager - wrapper over node-mongodb driver */
 
 'use strict';
 
-// Connection
-const user = process.env.user;
-const password = process.env.password;
-const dbname = process.env.db_name;
-const url = `mongodb://${user}:${password}@[db hosting address]/${dbname}`;
+const dbManager = (logger) => {
+  const log = logger;
 
-// shortcut
-const log = console.log;
+  // Connection
+  const pe = process.env;
+  // use a cloud-hosted mongo db, such as mlab.com
+  const url = `mongodb://${pe.user}:${pe.password}@${pe.db_host}:${pe.db_port}/${pe.db_name}`;
 
-let db = {};
-/* sample db workflow */
-require('monk')(url).then((adb) => {
-  try {
-    // drop db by connecting to underlying db instance
-    adb._db.dropDatabase();
-    console.log('DB dropped.');
-    db = adb;
-  } catch (e) {
-    log(e);
-  }
-}).then(() => {
-  log(`Connected to mongodb at ${url}`);
-  // collection
-  return db.get('bios-sample-data');
-}).then((col) => {
-  col.remove({});
-  return col;
-}).then((col) => {
-  log('Collection cleared.');
-  const arr = [];
-  return col.insert(arr);
-}).then((col) => {
-  log(`Inserted ${col.length} docs into collection.`);
-}).then(() => {
-  db.close();
-  log('db closed successfully.');
-});
+  let db = null;
+  let collection = null;
+  const adminDb = null;
+
+  // connect to db
+  const connect = () =>
+    require('mongodb').MongoClient.connect(url, {
+      poolSize: 20,
+    }) // default poolsize = 5
+    .then((db_inst) => {
+      log.info(`Connected to mongodb at ${url}`);
+      // get db, collection
+      db = db_inst;
+      // get existing collection, or create if doesn't exist
+      // NOTE: Collections are not created until the first document is inserted
+      collection = db.collection('khan-info');
+    }).catch(err => log.error(err));
+
+  // Mongo's UPSERT operation
+  const upsert = doc =>
+    // Update the document using an UPSERT operation, ensuring creation if it does not exist
+    // does not change "_id" value
+    collection.updateOne({ // criteria
+    },
+      doc, // use {$set: ...} to set just one field
+      {
+        upsert: true,
+      })
+    .then(res => log.debug(`Inserted ${doc.title}`));
+
+  // always close before exiting
+  // https://docs.mongodb.com/manual/reference/method/db.collection.stats/#accuracy-after-unexpected-shutdown
+  // can run validate() to verify correct stats
+  const close = () => db.close()
+    .then(() => log.info('DB closed successfully.'));
+
+  return {
+    close,
+    connect,
+    upsert,
+  };
+};
+
+module.exports = dbManager;
