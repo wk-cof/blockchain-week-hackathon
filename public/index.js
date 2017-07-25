@@ -18,9 +18,9 @@ socket.on('message', (data) => {
 });
 
 
-$(document).ready(() => {
+window.onload = () => {
 // dom loaded
-});
+};
 
 const getdata1 = function () {
   return ['hello', 'bye'];
