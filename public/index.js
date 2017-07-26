@@ -19,7 +19,7 @@ socket.on('message', (data) => {
 
 
 window.onload = () => {
-// dom loaded
+  // dom loaded
 };
 
 const getdata1 = function () {
