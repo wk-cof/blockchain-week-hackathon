@@ -1,8 +1,8 @@
 // socket.io setup
 
 'use strict';
-
-const socket = io();
+/*
+const sockjs = io();
 socket.on('connect', () => {
   console.log('connected to server.');
   socket.emit('newword', 'Hello! I am a new client testing out messaging.');
@@ -16,7 +16,7 @@ socket.on('disconnect', () => {
 socket.on('message', (data) => {
   console.log(data);
 });
-
+*/
 
 window.onload = () => {
   // dom loaded

@@ -10,10 +10,10 @@
   <title>Title</title>
   <link rel="icon" href="favicon.ico">
   <!-- fonts -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto:300" rel="stylesheet">
+  <link rel='stylesheet' href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto:300">
   <!-- spectre.css -->
   <!-- also suggests consistent color theme -->
-  <link href="spectre.min.css" rel="stylesheet">
+  <link rel='stylesheet' href="spectre.min.css">
   <style>
     body {
       /*
@@ -25,6 +25,15 @@
       padding-left: 1em;
     }
   </style>
+
+  <!-- preloading late-discovered js -->
+  <!-- cdn.js is CONSIDERABLY FASTER than unpkg -->
+  <link rel='preload' href='lib/vue.min.js' as='script'>
+  <!-- socket.io client-side -->
+  <link rel='preload' href='lib/sockjs.min.js' as='script'>
+  <!-- custom js -->
+  <link rel='preload' href='domhelpers.js' as='script'>
+  <link rel='preload' href='index.js' as='script'>
 </head>
 
 <body>
@@ -87,14 +96,8 @@
     </div>
   </div>
 
-  <!-- Vue.js + bootstrap-vue(doesn't require jquery+bootstrap) -->
-  <!-- cdn.js is CONSIDERABLY FASTER than unpkg -->
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.4.2/vue.min.js'></script>
-  <!-- socket.io client-side -->
-  <script src='lib/socket.io.min.js'></script>
-  <!-- custom js -->
-  <script src='domhelpers.js'></script>
-  <script src='index.js'></script>
+  <script href='domhelpers.js'></script>
+  <script href='index.js'></script>
 </body>
 
 </html>
