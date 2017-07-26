@@ -27,7 +27,7 @@ Then go visit http://localhost:8000
 * [x] **[Vue.js](https://vuejs.org/)**
 * [x] [Spectre.css](https://picturepan2.github.io/spectre/index.html) - lightweight CSS-only framework that uses native HTML tags. A third the size of Bulma.css, a quarter the size of Bootstrap css.
 ### Extra
-* [x] [Socket.io](https://socket.io/) - Simple client-server communication
+* [x] [SockJS](https://github.com/sockjs) - Websockets client-server communication
 * [x] [Eslint](http://eslint.org/) - Javascript linting
 
 

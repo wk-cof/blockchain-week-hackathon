@@ -1,22 +1,21 @@
-// socket.io setup
+// sock.js setup
 
 'use strict';
-/*
-const sockjs = io();
-socket.on('connect', () => {
+console.log('started script');
+const sockjs = new SockJS('/echo');
+sockjs.onopen = () => {
   console.log('connected to server.');
-  socket.emit('newword', 'Hello! I am a new client testing out messaging.');
-});
-socket.on('disconnect', () => {
+  sockjs.send('newword', 'Hello! I am a new client testing out messaging.');
+};
+sockjs.onclose = () => {
   console.log('disconnected.');
-});
+};
 
 // NOTE: websockets do not guarantee that info arrives in same order it was sent
 // nor does server send info in series in order
-socket.on('message', (data) => {
+sockjs.onmessage = (data) => {
   console.log(data);
-});
-*/
+};
 
 window.onload = () => {
   // dom loaded
