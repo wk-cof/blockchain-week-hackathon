@@ -29,24 +29,26 @@ const processWord = (word, socket) => {
   }
 };
 
-// SOCKET.IO
-const io = require('socket.io').listen(server);
+// SOCK.JS
+const sockjs_opts = {sockjs_url: "https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"};
+const sockjs = require('sockjs').createServer(sockjs_opts);
+sockjs.installHandlers(server, {prefix:'/echo'});
 
-io.on('connection', (socket) => {
+sockjs.on('connection', (conn) => {
   log.info('new connection.');
 
   // emit an event to the socket
-  socket.emit('message', `Server using ${version}`);
+  conn.emit('message', `Server using ${version}`);
 
   // emit an event to ALL connected sockets
   // io.emit('broadcast', data);
 
   // listen to events
-  socket.on('newword', (word) => {
+  conn.on('newword', (word) => {
     log.info(word);
     processWord(word, socket);
   });
-  socket.on('disconnect', (e) => {
+  conn.on('disconnect', (e) => {
     log.info('user disconnected.');
   });
 });
