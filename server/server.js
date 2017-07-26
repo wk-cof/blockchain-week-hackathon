@@ -12,12 +12,12 @@ const app = express();
 app.use(require('helmet')()); // use helmet
 app.use(require('cors')()); // enable CORS
 // serves all static files in /public
-app.use(express.static(`${__dirname}/public`));
+app.use(express.static(`${__dirname}/../public`));
 const port = process.env.PORT || 8000;
 const server = require('http').Server(app);
 
 // boilerplate version
-const version = `Express-Boilerplate v${require('./package.json').version}`;
+const version = `Express-Boilerplate v${require('../package.json').version}`;
 
 // start server
 server.listen(port, () => {
@@ -38,7 +38,7 @@ io.on('connection', (socket) => {
   log.info('new connection.');
 
   // emit an event to the socket
-  socket.emit('message', version);
+  socket.emit('message', `Server using ${version}`);
 
   // emit an event to ALL connected sockets
   // io.emit('broadcast', data);
