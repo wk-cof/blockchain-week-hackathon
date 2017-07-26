@@ -17,7 +17,7 @@ Then go visit http://localhost:8000
 
 ### Back-end
 * [x] **[Express](https://github.com/expressjs/express)** - Fast, unopinionated, minimalist web framework for Node.js
-* [x] [Nodemon](https://nodemon.io/) - Automatic server reload.
+* [x] [node-dev](https://github.com/fgnass/node-dev) - Automatic server reload, much more lightweight than `nodemon` b/c doesn't require 9MB `chokidar`
 * [x] [CORS](https://github.com/expressjs/cors) - Cross-origin resource sharing (CORS) middleware.
 * [x] [Helmet.js](https://helmetjs.github.io/) - Security with HTTP headers.
 * [x] [node-fetch](https://github.com/bitinn/node-fetch) - HTTP requests using browser `window.fetch()` api, < half MB (much more lightweight than Request)
