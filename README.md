@@ -20,7 +20,7 @@ Then go visit http://localhost:8000
 * [x] [Nodemon](https://nodemon.io/) - Automatic server reload.
 * [x] [CORS](https://github.com/expressjs/cors) - Cross-origin resource sharing (CORS) middleware.
 * [x] [Helmet.js](https://helmetjs.github.io/) - Security with HTTP headers.
-* [x] [Request-promise](https://github.com/request/request-promise) - Simple HTTP requests, with modern ES6 promises.
+* [x] [node-fetch](https://github.com/bitinn/node-fetch) - HTTP requests using browser `window.fetch()` api, < half MB (much more lightweight than Request)
 * [x] [Bunyan](https://github.com/trentm/node-bunyan) - Easy JSON logging.
 * [x] **[MongoDB](https://github.com/mongodb/node-mongodb-native)**
 ### Front-end

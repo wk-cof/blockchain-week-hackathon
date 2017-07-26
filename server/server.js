@@ -1,10 +1,8 @@
 'use strict';
 
 const Promise = require('bluebird');
-
 // custom logger
 const log = require('./logger.js');
-
 const express = require('express');
 
 const app = express();
@@ -76,26 +74,34 @@ app.post('/api/users', jsonParser, (req, res) => {
 });
 
 
+// ex. using 'node-fetch' to call JSON REST API
 /*
-// ex. using 'request-promise' to call JSON REST API
-var rp = require('request-promise');
-var options = {
-  uri: 'https://api.github.com/user/repos',
-  qs: {
-    access_token: 'xxxxx xxxxx' // -> uri + '?access_token=xxxxx%20xxxxx'
-  },
+const fetch = require('node-fetch');
+// for all options see https://github.com/bitinn/node-fetch#options
+const url = 'https://api.github.com/users/cktang88/repos';
+const options = {
+  method: 'GET',
   headers: {
     // spoof user-agent
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
-  },
-  json: true // Automatically parses the JSON string in the response
+  }
 };
 
-rp(options)
-  .then(function (data) {
-    console.log('User has %d repos', repos.length);
+fetch(url, options)
+  .then(res => {
+    // meta
+    console.log(res.ok);
+    console.log(res.status);
+    console.log(res.statusText);
+    console.log(res.headers.raw());
+    console.log(res.headers.get('content-type'));
+    return res.json();
   })
-  .catch(function (err) {
+  .then(json => {
+    console.log(`User has ${json.length} repos`);
+  })
+  .catch(err => {
     // API call failed...
+    log.error(err);
   });
-  */
+*/

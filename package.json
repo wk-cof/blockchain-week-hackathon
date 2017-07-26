@@ -21,9 +21,8 @@
     "express": "^4.15.3",
     "helmet": "^3.6.1",
     "mongodb": "^2.2.30",
+    "node-fetch": "^1.7.1",
     "nodemon": "^1.11.0",
-    "request": "^2.81.0",
-    "request-promise": "^4.2.1",
     "socket.io": "^2.0.3"
   },
   "devDependencies": {
