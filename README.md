@@ -22,10 +22,10 @@ Then go visit http://localhost:8000
 * [x] [Helmet.js](https://helmetjs.github.io/) - Security with HTTP headers.
 * [x] [Request-promise](https://github.com/request/request-promise) - Simple HTTP requests, with modern ES6 promises.
 * [x] [Bunyan](https://github.com/trentm/node-bunyan) - Easy JSON logging.
-* [x] [Monk](https://github.com/Automattic/monk) - Tiny useful layer over **[MongoDB](https://github.com/mongodb/node-mongodb-native)**.
+* [x] **[MongoDB](https://github.com/mongodb/node-mongodb-native)**
 ### Front-end
 * [x] **[Vue.js](https://vuejs.org/)**
-* [x] [Bootstrap-Vue](https://github.com/bootstrap-vue/bootstrap-vue) - port of Bootstrap to Vue.js
+* [x] [Spectre.css](https://picturepan2.github.io/spectre/index.html) - lightweight CSS-only framework that uses native HTML tags. A third the size of Bulma.css, a quarter the size of Bootstrap css.
 ### Extra
 * [x] [Socket.io](https://socket.io/) - Simple client-server communication
 * [x] [Eslint](http://eslint.org/) - Javascript linting
@@ -36,6 +36,9 @@ Code linting with [AirBnB's style guide](https://github.com/airbnb/javascript):
 ```
 $ npm run lint
 ```
+
+**TODOS:**
+use Sass w/ node-sass-middleware, or similar
 
 ## License
 
