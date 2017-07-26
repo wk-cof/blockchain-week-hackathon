@@ -38,17 +38,16 @@ sockjs.on('connection', (conn) => {
   log.info('new connection.');
 
   // emit an event to the socket
-  conn.emit('message', `Server using ${version}`);
+  conn.write(`Server using ${version}`);
 
   // emit an event to ALL connected sockets
   // io.emit('broadcast', data);
 
   // listen to events
-  conn.on('newword', (word) => {
-    log.info(word);
-    processWord(word, socket);
+  conn.on('data', (data) => {
+    log.info(data);
   });
-  conn.on('disconnect', (e) => {
+  conn.on('close', (e) => {
     log.info('user disconnected.');
   });
 });

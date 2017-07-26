@@ -27,11 +27,8 @@
   </style>
 
   <!-- preloading late-discovered js -->
-  <!-- cdn.js is CONSIDERABLY FASTER than unpkg -->
   <link rel='preload' href='lib/vue.min.js' as='script'>
-  <!-- socket.io client-side -->
   <link rel='preload' href='lib/sockjs.min.js' as='script'>
-  <!-- custom js -->
   <link rel='preload' href='domhelpers.js' as='script'>
   <link rel='preload' href='index.js' as='script'>
 </head>
@@ -96,8 +93,12 @@
     </div>
   </div>
 
-  <script href='domhelpers.js'></script>
-  <script href='index.js'></script>
+  <!-- vue.js -->
+  <script src='lib/vue.min.js'></script>
+  <!-- sock.js client-side -->
+  <script src='lib/sockjs.min.js'></script>
+  <script src='domhelpers.js'></script>
+  <script src='index.js'></script>
 </body>
 
 </html>
