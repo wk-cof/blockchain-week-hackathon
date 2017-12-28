@@ -18,14 +18,13 @@ Then go visit http://localhost:8000
 ### Back-end
 * [x] **[Express](https://github.com/expressjs/express)** - Web framework for Node.js
 * [x] **[MongoDB](https://github.com/mongodb/node-mongodb-native)** - Database for fast prototyping
-* [x] [node-dev](https://github.com/fgnass/node-dev) - Automatic server reload, much more lightweight than `nodemon` b/c doesn't require 9MB `chokidar`
+* [x] [node-dev](https://github.com/fgnass/node-dev) - Automatic server reload, more lightweight than `nodemon`
 * [x] [Bunyan](https://github.com/trentm/node-bunyan) - Easy JSON logging.
 
 ### Front-end
 * [x] **[Vue.js](https://vuejs.org/)**
 * [x] [Spectre.css](https://picturepan2.github.io/spectre/index.html) - lightweight CSS-only framework that uses native HTML tags. A third the size of Bulma.css, a quarter the size of Bootstrap css.
 ### Extra
-* [x] [SockJS](https://github.com/sockjs) - Websockets client-server communication
 * [x] [Eslint](http://eslint.org/) - Javascript linting
 * [x] [node-fetch](https://github.com/bitinn/node-fetch) - server-side HTTP requests using browser `window.fetch()` api, < half MB (much more lightweight than Request)
 * [x] Security via [CORS](https://github.com/expressjs/cors) and [Helmet.js](https://helmetjs.github.io/)
@@ -42,7 +41,6 @@ Then go visit http://localhost:8000
 ├── node_modules
 ├── public
 │   ├── lib
-│   │   ├── sock.min.js
 │   │   ├── spectre.min.css
 |   │   └── vue.min.js
 │   ├── domhelpers.js
