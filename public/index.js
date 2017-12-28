@@ -1,24 +1,8 @@
-// sock.js setup
-
 'use strict';
+
 console.log('started script');
-const sockjs = new SockJS('/echo');
-sockjs.onopen = () => {
-  console.log('connected to server.');
-  sockjs.send('Hello! I am a new client testing out messaging.');
-};
-sockjs.onclose = () => {
-  console.log('disconnected.');
-};
-
-// NOTE: websockets do not guarantee that info arrives in same order it was sent
-// nor does server send info in series in order
-sockjs.onmessage = (res) => {
-  console.log(res.data);
-};
-
 window.onload = () => {
-  // dom loaded
+  // DOM loaded
 };
 
 const getdata1 = function () {

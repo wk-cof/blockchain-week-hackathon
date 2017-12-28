@@ -23,36 +23,6 @@ server.listen(port, () => {
   log.info(`Listening on port ${port}`);
 });
 
-const processWord = (word, socket) => {
-  if (!socket) {
-    log.error('Socket is undefined.');
-  }
-};
-
-// SOCK.JS
-const sockjs_opts = {sockjs_url: "https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"};
-const sockjs = require('sockjs').createServer(sockjs_opts);
-sockjs.installHandlers(server, {prefix:'/echo'});
-
-sockjs.on('connection', (conn) => {
-  log.info('new connection.');
-
-  // emit an event to the socket
-  conn.write(`Server using ${version}`);
-
-  // emit an event to ALL connected sockets
-  // io.emit('broadcast', data);
-
-  // listen to events
-  conn.on('data', (data) => {
-    log.info(data);
-  });
-  conn.on('close', (e) => {
-    log.info('user disconnected.');
-  });
-});
-
-
 // 'body-parser' middleware for POST
 const bodyParser = require('body-parser');
 // create application/json parser
