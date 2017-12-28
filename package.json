@@ -1,7 +1,7 @@
 {
   "name": "express-boilerplate",
-  "version": "1.4.0",
-  "description": "A fast, simple express web app boilerplate project.",
+  "version": "1.5.0",
+  "description": "A fast, simple express web app boilerplate project",
   "main": "server.js",
   "engines": {
     "node": ">=6.1.0"
