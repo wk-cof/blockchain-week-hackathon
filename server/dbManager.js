@@ -19,26 +19,28 @@ const dbManager = (logger) => {
     require('mongodb').MongoClient.connect(url, {
       poolSize: 20,
     }) // default poolsize = 5
-    .then((db_inst) => {
-      log.info(`Connected to mongodb at ${url}`);
-      // get db, collection
-      db = db_inst;
-      // get existing collection, or create if doesn't exist
-      // NOTE: Collections are not created until the first document is inserted
-      collection = db.collection('khan-info');
-    }).catch(err => log.error(err));
+      .then((dbInst) => {
+        log.info(`Connected to mongodb at ${url}`);
+        // get db, collection
+        db = dbInst;
+        // get existing collection, or create if doesn't exist
+        // NOTE: Collections are not created until the first document is inserted
+        collection = db.collection('khan-info');
+      }).catch(err => log.error(err));
 
   // Mongo's UPSERT operation
   const upsert = doc =>
     // Update the document using an UPSERT operation, ensuring creation if it does not exist
     // does not change "_id" value
-    collection.updateOne({ // criteria
-    },
+    collection.updateOne(
+      { // criteria
+      },
       doc, // use {$set: ...} to set just one field
       {
         upsert: true,
-      })
-    .then(res => log.debug(`Inserted ${doc.title}`));
+      },
+    )
+      .then(res => log.debug(`Inserted ${doc.title}`, res));
 
   // always close before exiting
   // https://docs.mongodb.com/manual/reference/method/db.collection.stats/#accuracy-after-unexpected-shutdown
