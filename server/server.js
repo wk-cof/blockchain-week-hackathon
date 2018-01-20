@@ -35,6 +35,7 @@ if (process.env.ACCOUNT_SID) {
 
 const incorrectUsage = 'Sorry, we do not recognise that message.' +
   'To borrow money send BORROW and AMOUNT, INTEREST RATE, DAYS UNTIL DUE, LENDER MOBILE NUMBER';
+const twilioNumber = '+442033895302';
 //---------------------------------------------------------------------------
 // start server
 let dbInstance = dbManager();
@@ -42,49 +43,48 @@ let dbInstance = dbManager();
     log.info(`Listening on port ${port}`);
   });
 
-// 'body-parser' middleware for POST
-// create application/json parser
-// const jsonParser = bodyParser.json();
-// // create application/x-www-form-urlencoded parser
-// const urlencodedParser = bodyParser.urlencoded({
-//   extended: false,
-// });
 app.use(bodyParser());
 
-app.get('/api/twilio', (req, res) => {
+const sendTwilioMessage = (messageBody, fromNumber, toNumber) => {
   let client = new twilio(accountSid, authToken);
-  client.messages.create({
-    body: 'Hello from Node',
-    to: '+447469455030',  // Text this number
-    // to: '+447827345680',  // Text this number
-    from: '+442033895302' // From a valid Twilio number
-  })
-  .then((message) => {
-    console.log(message.sid);
-    res.send('message sent');
-  })
-  .catch(err => {
-    res.status(400);
-    res.send(err);
+  return client.messages.create({
+    body: messageBody,
+    from: fromNumber,
+    to: toNumber
   });
+}
+
+app.get('/api/test', (req, res) => {
+  sendTwilioMessage('helloWorld', twilioNumber, '+447827345680')
+    .then(() => {
+      res.send('message sent');
+    })
+    .catch(err => {
+      res.status(400);
+      res.send(err);
+    });
 })
 
 app.post('/api/twilio-request', (req, res) => {
   const twiml = new MessagingResponse();
-
   processMessage(req.body.Body, req.body.From)
     .then(responseMessage => {
       twiml.message(responseMessage);
       res.writeHead(200, {'Content-Type': 'text/xml'});
       res.end(twiml.toString());
+    })
+    .catch(err => {
+      twiml.message(JSON.stringify(err));
+      res.writeHead(400, {'Content-Type': 'text/xml'});
+      res.end(twiml.toString());
     });
 });
 
 const processMessage = (message, phoneNumber) => {
-
-  if (message.match(/^BORROW.*/i)) {
+  message = message.toLowerCase();
+  if (message.match(/^borrow.*/i)) {
     // BORROW\s+\d+,\s*\d+\s*,\s*\d+\s*,\s*\d+
-    let matches = message.match(/^BORROW\s+(\d+),\s*(\d+)\s*,\s*(\d+)\s*,\s*(\+?\d+)/i);
+    let matches = message.match(/^borrow\s+(\d+),\s*(\d+)\s*,\s*(\d+)\s*,\s*(\+?\d+)/i);
     if (matches.length < 5) {
       return Promise.resolve('Enter the BORROW and AMOUNT, INTEREST RATE, DAYS UNTIL DUE, LENDER MOBILE NUMBER');
     }
@@ -103,7 +103,7 @@ const processMessage = (message, phoneNumber) => {
         return `You want to borrow ${borrowObj.amount} with ${borrowObj.interestRate}% interest due in ${borrowObj.daysUntilDue} days.` +
           `A total of ${returnAmount} will be due. Is that correct? YES or NO`;
       });
-  } else if (message.match(/^YES/i)) {
+  } else if (message.match(/^yes/i)) {
     return dbInstance.read(phoneNumber)
       .then(actionObjList => {
         if (!actionObjList) {
@@ -114,7 +114,10 @@ const processMessage = (message, phoneNumber) => {
           case 'borrow':
             return dbInstance.remove(actionObj.phoneNumber)
               .then(() => {
-                return 'Thank you, the lender will be notified';
+                sendTwilioMessage('Hi lender', twilioNumber, actionObj.lenderNumber)
+                  .then(() => {
+                    return 'Thank you, the lender is notified';
+                  });
               });
           default:
             return incorrectUsage;
