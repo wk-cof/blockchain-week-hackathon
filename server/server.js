@@ -76,7 +76,7 @@ app.post('/api/twilio-request', (req, res) => {
   } else if(req.body.Body == 'bye') {
     twiml.message('Goodbye');
   } else {
-    twiml.message('No Body param match, Twilio sends this in the request to your server.');
+    twiml.message(JSON.stringify(req.body));
   }
 
   res.writeHead(200, {'Content-Type': 'text/xml'});
