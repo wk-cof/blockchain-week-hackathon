@@ -28,9 +28,8 @@ const dbManager = () => {
   let collection = null;
   const adminDb = null;
 
-
-  let insert = (obj) => {
-    return new Promise(function (resolve, reject) {
+  let doAction = (funcToCall, args) => {
+    return new Promise((resolve, reject) => {
       MongoClient.connect(url, function (err, client) {
         if (err) {
           return reject(err);
@@ -38,61 +37,39 @@ const dbManager = () => {
         console.log("Connected to server");
         try {
           const db = client.db(pe.db_name);
-          mongoFuncs.insertDocument(db, obj, function () {
+          let newArgs = [db, ...args];
+          funcToCall(...newArgs, (response) => {
             client.close();
-            resolve();
+            resolve(response);
           });
         } catch (err) {
           reject(err);
         }
       });
     });
+  };
+
+  let insert = (obj) => {
+    return doAction(mongoFuncs.insertDocument, [obj]);
   };
 
   const readAll = () => {
-    return new Promise((resolve, reject) => {
-      MongoClient.connect(url, function (err, client) {
-        if (err) {
-          return reject(err);
-        }
-        console.log("Connected to server");
-        try {
-          const db = client.db(pe.db_name);
-          mongoFuncs.readDocuments(db, function (response) {
-            client.close();
-            resolve(response);
-          });
-        } catch (err) {
-          reject(err);
-        }
-      });
-    });
+    return doAction(mongoFuncs.readDocuments, []);
   };
 
   const read = (id) => {
-    return new Promise((resolve, reject) => {
-      MongoClient.connect(url, function (err, client) {
-        if (err) {
-          return reject(err);
-        }
-        console.log("Connected to server");
-        try {
-          const db = client.db(pe.db_name);
-          mongoFuncs.readOne(db, id, function (response) {
-            client.close();
-            resolve(response);
-          });
-        } catch (err) {
-          reject(err);
-        }
-      });
-    });
+    return doAction(mongoFuncs.readOne, [id]);
   };
 
+  const remove = (id) => {
+    return doAction(mongoFuncs.removeDocument, [id]);
+  }
 
   return {
     insert,
-    readAll
+    readAll,
+    read,
+    remove
   };
 };
 

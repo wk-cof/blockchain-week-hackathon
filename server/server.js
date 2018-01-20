@@ -101,16 +101,17 @@ const processMessage = (message, phoneNumber) => {
 
         return `You want to borrow ${borrowObj.amount} with ${borrowObj.interestRate}% interest due in ${borrowObj.daysUntilDue} days.` +
           `A total of ${returnAmount} will be due. Is that correct? YES or NO`;
-      })
+      });
+  } else if (message.match(/^YES/i)) {
+
   } else {
     return Promise.resolve('incorrect usage');
   }
-
 };
 
 
 // app.get('/api/records', (req, res) => {
-//   dbInstance.readAll()
+//   dbInstance.remove('+447469455030')
 //     .then(result => {
 //       res.send(result);
 //     })
