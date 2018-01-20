@@ -1,7 +1,6 @@
-let fs=require("fs");
 /* dbManager - wrapper over node-mongodb driver */
-
 'use strict';
+const fs=require("fs");
 
 const dbManager = (logger) => {
   const log = logger;
@@ -50,10 +49,26 @@ const dbManager = (logger) => {
   const close = () => db.close()
     .then(() => log.info('DB closed successfully.'));
 
+  const insertDocuments = (callback) => {
+    // Insert some documents
+    const collection = db.collection('test');
+
+    collection.insertMany([
+      {a : 1}, {a : 2}, {a : 3}
+    ], (err, result) => {
+      assert.equal(err, null);
+      assert.equal(3, result.result.n);
+      assert.equal(3, result.ops.length);
+      log.info("Inserted 3 documents into the collection");
+      callback(result);
+    });
+  }
+
   return {
     close,
     connect,
     upsert,
+    insertDocuments,
   };
 };
 
