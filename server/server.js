@@ -18,10 +18,18 @@ app.use(require('cors')()); // enable CORS
 app.use(express.static(`${__dirname}/../public`));
 
 const fs = require("fs");
-let content = fs.readFileSync("twilio-auth.json", "utf8");
-const twilioLoginInfo = JSON.parse(content);
-const accountSid = process.env.ACCOUNT_SID || twilioLoginInfo.accountSid;
-const authToken = process.env.AUTH_TOKEN || twilioLoginInfo.authToken;
+let accountSid = process.env.ACCOUNT_SID || twilioLoginInfo.accountSid;
+let authToken;
+
+if (process.env.ACCOUNT_SID) {
+  accountSid = process.env.ACCOUNT_SID;
+  authToken = process.env.AUTH_TOKEN
+} else {
+  let content = fs.readFileSync("twilio-auth.json", "utf8");
+  const twilioLoginInfo = JSON.parse(content);
+  accountSid = twilioLoginInfo.accountSid;
+  authToken = twilioLoginInfo.authToken;
+}
 
 
 //---------------------------------------------------------------------------
