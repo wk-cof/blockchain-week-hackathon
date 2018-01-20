@@ -46,7 +46,7 @@ app.post('/api/records', (req, res) => {
   // if (!req.body) {
   //   return res.sendStatus(400);
   // }
-  dbInstance.insert({foo: 'bar'})
+  dbInstance.insert({yo: 'man'})
     .then(() => {
       res.send('successfully inserted');
     })
