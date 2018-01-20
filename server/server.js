@@ -119,7 +119,7 @@ const processMessage = (message, phoneNumber) => {
             return dbInstance.update(actionObj.phoneNumber,
               {borrowerNumber: actionObj.phoneNumber, phoneNumber: actionObj.lenderNumber, action: 'lend'})
               .then(() => {
-                return sendTwilioMessage(`A borrower with Karma of 5 would like to borrow ${actionObj.amount} at ` +
+                return sendTwilioMessage(`A borrower with Karma rating of 5 would like to borrow ${actionObj.amount} at ` +
                   `${actionObj.interestRate}% interest for ${actionObj.daysUntilDue} days.Would you like to accept YES or NO`,
                   twilioNumber,
                   actionObj.lenderNumber)
@@ -132,7 +132,7 @@ const processMessage = (message, phoneNumber) => {
             let borrowerMsg = ` To receive positive Karma complete the transaction in ${actionObj.daysUntilDue} days.  Would you like a reminder? YES or NO`;
             return registerInBlockchain()
               .then(() => {
-                return dbInstance.update(actionObj.phoneNumber, {action: 'reminder'});
+                return dbInstance.update(actionObj.phoneNumber, {action: 'reminder', phoneNumber: actionObj.borrowerNumber});
               })
               .then(() => {
                 return sendTwilioMessage(commonMsg + borrowerMsg, twilioNumber, actionObj.borrowerNumber);
@@ -140,9 +140,20 @@ const processMessage = (message, phoneNumber) => {
               .then(() => {
                 return commonMsg;
               });
+
+          case 'reminder':
+            return dbInstance.remove(phoneNumber)
+              .then(() => {
+                return 'Thank you, we will send you a reminder 14, 7, 3 and 1 day before repayment is due. To repay both you and the lender need to text TRANS REPAY and AMOUNT';
+              });
           default:
             return incorrectUsage;
         }
+      });
+  } else if (message.match(/^no/i)) {
+    return dbInstance.remove(phoneNumber)
+      .then(() => {
+        return 'Transaction canceled';
       });
   } else {
     return Promise.resolve(incorrectUsage);

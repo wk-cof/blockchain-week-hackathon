@@ -57,10 +57,9 @@ const updateDocument = function (db, id, newObj, callback) {
 const removeDocument = function (db, id, callback) {
     const collection = db.collection('test');
     // Delete document where a is 3
-    collection.deleteOne({ phoneNumber: id }, function (err, result) {
+    collection.deleteMany({ phoneNumber: id }, function (err, result) {
         assert.equal(err, null);
-        assert.equal(1, result.result.n);
-        console.log("Removed the document with phoneNumber = " + id);
+        console.log("Removed all documents with phoneNumber = " + id);
         callback("Removed the document with phoneNumber = " + id);
     });
 }
