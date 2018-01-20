@@ -54,8 +54,12 @@ const sendTwilioMessage = (messageBody, fromNumber, toNumber) => {
   });
 }
 
+const registerInBlockchain = () => {
+  return Promise.resolve();
+}
+
 app.get('/api/test', (req, res) => {
-  sendTwilioMessage('helloWorld', twilioNumber, '+447827345680')
+  dbInstance.update('+447827345680', {'foo': 'bar'})
     .then(() => {
       res.send('message sent');
     })
@@ -63,7 +67,7 @@ app.get('/api/test', (req, res) => {
       res.status(400);
       res.send(err);
     });
-})
+});
 
 app.post('/api/twilio-request', (req, res) => {
   const twiml = new MessagingResponse();
@@ -112,12 +116,29 @@ const processMessage = (message, phoneNumber) => {
         let actionObj = actionObjList[0];
         switch (actionObj.action) {
           case 'borrow':
-            return dbInstance.remove(actionObj.phoneNumber)
+            return dbInstance.update(actionObj.phoneNumber,
+              {borrowerNumber: actionObj.phoneNumber, phoneNumber: actionObj.lenderNumber, action: 'lend'})
               .then(() => {
-                sendTwilioMessage('Hi lender', twilioNumber, actionObj.lenderNumber)
-                  .then(() => {
-                    return 'Thank you, the lender is notified';
-                  });
+                return sendTwilioMessage(`A borrower with Karma of 5 would like to borrow ${actionObj.amount} at ` +
+                  `${actionObj.interestRate}% interest for ${actionObj.daysUntilDue} days.Would you like to accept YES or NO`,
+                  twilioNumber,
+                  actionObj.lenderNumber)
+                })
+                .then(() => {
+                  return 'Thank you, the lender is notified';
+                });
+          case 'lend':
+            let commonMsg = `Congratulations, the transaction has been recorded, please exchange money.`;
+            let borrowerMsg = ` To receive positive Karma complete the transaction in ${actionObj.daysUntilDue} days.  Would you like a reminder? YES or NO`;
+            return registerInBlockchain()
+              .then(() => {
+                return dbInstance.update(actionObj.phoneNumber, {action: 'reminder'});
+              })
+              .then(() => {
+                return sendTwilioMessage(commonMsg + borrowerMsg, twilioNumber, actionObj.borrowerNumber);
+              })
+              .then(() => {
+                return commonMsg;
               });
           default:
             return incorrectUsage;

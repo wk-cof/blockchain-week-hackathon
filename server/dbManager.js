@@ -61,6 +61,10 @@ const dbManager = () => {
     return doAction(mongoFuncs.readOne, [id]);
   };
 
+  const update = (id, newObj) => {
+    return doAction(mongoFuncs.updateDocument, [id, newObj]);
+  };
+
   const remove = (id) => {
     return doAction(mongoFuncs.removeDocument, [id]);
   }
@@ -69,6 +73,7 @@ const dbManager = () => {
     insert,
     readAll,
     read,
+    update,
     remove
   };
 };

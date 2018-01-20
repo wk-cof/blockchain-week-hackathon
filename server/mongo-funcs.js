@@ -15,9 +15,7 @@ if (process.env.MONGO_USER) {
 const assert = require('assert');
 
 const insertDocument = function (db, obj, callback) {
-    // Get the documents collection
     const collection = db.collection('test');
-    // Insert some documents
     collection.insert(obj, function (err, result) {
         assert.equal(err, null);
         console.log("Inserteded " + JSON.stringify(obj));
@@ -26,9 +24,7 @@ const insertDocument = function (db, obj, callback) {
 }
 
 const readDocuments = function (db, callback) {
-    // Get the documents collection
     const collection = db.collection('test');
-    // Find some documents
     collection.find({}).toArray(function (err, docs) {
         assert.equal(err, null);
         console.log("Found the following records");
@@ -38,9 +34,7 @@ const readDocuments = function (db, callback) {
 }
 
 const readOne = function (db, id, callback) {
-    // Get the documents collection
     const collection = db.collection('test');
-    // Find some documents
     collection.find({ phoneNumber: id }).toArray(function (err, doc) {
         assert.equal(err, null);
         console.log("Found the following records");
@@ -49,8 +43,18 @@ const readOne = function (db, id, callback) {
     });
 }
 
+const updateDocument = function (db, id, newObj, callback) {
+    const collection = db.collection('test');
+    collection.updateOne({ phoneNumber: id }
+        , { $set: newObj }, function (err, result) {
+            assert.equal(err, null);
+            assert.equal(1, result.result.n);
+            console.log("Updated the document with the field a equal to 2");
+            callback(result);
+        });
+};
+
 const removeDocument = function (db, id, callback) {
-    // Get the documents collection
     const collection = db.collection('test');
     // Delete document where a is 3
     collection.deleteOne({ phoneNumber: id }, function (err, result) {
@@ -65,5 +69,6 @@ module.exports = {
     readDocuments,
     insertDocument,
     readOne,
+    updateDocument,
     removeDocument
 };
