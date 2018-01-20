@@ -19,11 +19,8 @@ app.use(express.static(`${__dirname}/../public`));
 
 // start server
 let dbInstance = dbManager(logger);
-// dbInstance.connect()
-  // .then(() => {
-    server.listen(port, () => {
-      log.info(`Listening on port ${port}`);
-    // });
+  server.listen(port, () => {
+    log.info(`Listening on port ${port}`);
   });
 
 // 'body-parser' middleware for POST
@@ -35,15 +32,13 @@ const urlencodedParser = bodyParser.urlencoded({
 });
 
 app.get('/api/records', (req, res) => {
-  res.send();
+  res.send('success');
 });
 
 app.post('/api/records', (req, res) => {
-  dbInstance.connect()
+  dbInstance.insert()
     .then(() => {
-      dbInstance.insertDocuments(result => {
-        res.send(result);
-      });
+      res.send('successfully inserted');
     });
 });
 

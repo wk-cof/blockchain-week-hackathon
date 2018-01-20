@@ -1,9 +1,10 @@
 /* dbManager - wrapper over node-mongodb driver */
 'use strict';
 const fs=require("fs");
+const MongoClient = require('mongodb').MongoClient;
+const assert = require('assert');
 
-const dbManager = (logger) => {
-  const log = logger;
+const dbManager = () => {
 
   // Connection
   // const pe = process.env ;
@@ -15,60 +16,41 @@ const dbManager = (logger) => {
   let collection = null;
   const adminDb = null;
 
-  // connect to db
-  const connect = () =>
-    require('mongodb').MongoClient.connect(url, {
-      poolSize: 20,
-    }) // default poolsize = 5
-      .then((dbInst) => {
-        log.info(`Connected to mongodb at ${url}`);
-        // get db, collection
-        db = dbInst;
-        // get existing collection, or create if doesn't exist
-        // NOTE: Collections are not created until the first document is inserted
-        collection = db.collection('test');
-      }).catch(err => log.error(err));
 
-  // Mongo's UPSERT operation
-  const upsert = doc =>
-    // Update the document using an UPSERT operation, ensuring creation if it does not exist
-    // does not change "_id" value
-    collection.updateOne(
-      { // criteria
-      },
-      doc, // use {$set: ...} to set just one field
-      {
-        upsert: true,
-      },
-    )
-      .then(res => log.debug(`Inserted ${doc.title}`, res));
+  let insert = () => {
+    return new Promise(function (resolve, reject) {
+      MongoClient.connect(url, function(err, client) {
+        if(err) {
+          return reject(err);
+        }
+        console.log("Connected successfully to server");
 
-  // always close before exiting
-  // https://docs.mongodb.com/manual/reference/method/db.collection.stats/#accuracy-after-unexpected-shutdown
-  // can run validate() to verify correct stats
-  const close = () => db.close()
-    .then(() => log.info('DB closed successfully.'));
+        const db = client.db(pe.db_name);
+        insertDocuments(db, function() {
+          client.close();
+          resolve();
+        });
+      });
+    });
+  };
 
-  const insertDocuments = (callback) => {
+  const insertDocuments = function(db, callback) {
+    // Get the documents collection
+    const collection = db.collection(pe.collection);
     // Insert some documents
-    const collection = db.collection('test');
-
     collection.insertMany([
       {a : 1}, {a : 2}, {a : 3}
-    ], (err, result) => {
+    ], function(err, result) {
       assert.equal(err, null);
       assert.equal(3, result.result.n);
       assert.equal(3, result.ops.length);
-      log.info("Inserted 3 documents into the collection");
+      console.log("Inserted 3 documents into the collection");
       callback(result);
     });
   }
 
   return {
-    close,
-    connect,
-    upsert,
-    insertDocuments,
+    insert
   };
 };
 
