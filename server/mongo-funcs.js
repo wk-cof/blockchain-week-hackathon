@@ -5,7 +5,7 @@ const assert = require('assert');
 
 const insertDocument = function (db, obj, callback) {
     // Get the documents collection
-    const collection = db.collection(pe.collection);
+    const collection = db.collection('test');
     // Insert some documents
     collection.insert(obj, function (err, result) {
         assert.equal(err, null);
@@ -17,7 +17,7 @@ const insertDocument = function (db, obj, callback) {
 
 const readDocuments = function (db, callback) {
     // Get the documents collection
-    const collection = db.collection(pe.collection);
+    const collection = db.collection('test');
     // Find some documents
     collection.find({}).toArray(function (err, docs) {
         assert.equal(err, null);

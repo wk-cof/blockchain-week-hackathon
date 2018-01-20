@@ -6,7 +6,7 @@ const log = require('./logger.js');
 const express = require('express');
 const bodyParser = require('body-parser');
 const dbManager = require('./dbManager');
-// const logger = require('./logger');
+const twilio = require('twilio');
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -17,6 +17,14 @@ app.use(require('cors')()); // enable CORS
 // serves all static files in /public
 app.use(express.static(`${__dirname}/../public`));
 
+const fs = require("fs");
+let content = fs.readFileSync("twilio-auth.json", "utf8");
+const twilioLoginInfo = JSON.parse(content);
+const accountSid = process.env.ACCOUNT_SID || twilioLoginInfo.accountSid;
+const authToken = process.env.AUTH_TOKEN || twilioLoginInfo.authToken;
+
+
+//---------------------------------------------------------------------------
 // start server
 let dbInstance = dbManager();
   server.listen(port, () => {
@@ -30,6 +38,24 @@ const jsonParser = bodyParser.json();
 const urlencodedParser = bodyParser.urlencoded({
   extended: false,
 });
+
+app.get('/api/twilio', (req, res) => {
+  let client = new twilio(twilioLoginInfo.accountSid, twilioLoginInfo.authToken);
+  client.messages.create({
+    body: 'Hello from Node',
+    to: '+447469455030',  // Text this number
+    // to: '+447827345680',  // Text this number
+    from: '+442033895302' // From a valid Twilio number
+  })
+  .then((message) => {
+    console.log(message.sid);
+    res.send('message sent');
+  })
+  .catch(err => {
+    res.status(400);
+    res.send(err);
+  });
+})
 
 app.get('/api/records', (req, res) => {
   dbInstance.readAll()

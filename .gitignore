@@ -59,3 +59,4 @@ Temporary Items
 
 # auth files
 mongo-auth.json
+twilio-auth.json
