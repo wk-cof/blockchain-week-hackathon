@@ -57,7 +57,7 @@ const removeDocument = function (db, id, callback) {
         assert.equal(err, null);
         assert.equal(1, result.result.n);
         console.log("Removed the document with phoneNumber = " + id);
-        callback(result);
+        callback("Removed the document with phoneNumber = " + id);
     });
 }
 

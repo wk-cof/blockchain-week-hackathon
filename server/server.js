@@ -33,7 +33,8 @@ if (process.env.ACCOUNT_SID) {
   authToken = twilioLoginInfo.authToken;
 }
 
-
+const incorrectUsage = 'Sorry, we do not recognise that message.' +
+  'To borrow money send BORROW and AMOUNT, INTEREST RATE, DAYS UNTIL DUE, LENDER MOBILE NUMBER';
 //---------------------------------------------------------------------------
 // start server
 let dbInstance = dbManager();
@@ -103,9 +104,24 @@ const processMessage = (message, phoneNumber) => {
           `A total of ${returnAmount} will be due. Is that correct? YES or NO`;
       });
   } else if (message.match(/^YES/i)) {
-
+    return dbInstance.read(phoneNumber)
+      .then(actionObjList => {
+        if (!actionObjList) {
+          return incorrectUsage;
+        }
+        let actionObj = actionObjList[0];
+        switch (actionObj.action) {
+          case 'borrow':
+            return dbInstance.remove(actionObj.phoneNumber)
+              .then(() => {
+                return 'Thank you, the lender will be notified';
+              });
+          default:
+            return incorrectUsage;
+        }
+      });
   } else {
-    return Promise.resolve('incorrect usage');
+    return Promise.resolve(incorrectUsage);
   }
 };
 
