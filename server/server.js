@@ -42,11 +42,8 @@ app.get('/api/records', (req, res) => {
     });
   });
 
-app.post('/api/records', (req, res) => {
-  // if (!req.body) {
-  //   return res.sendStatus(400);
-  // }
-  dbInstance.insert({yo: 'man'})
+app.post('/api/records', jsonParser, (req, res) => {
+  dbInstance.insert(req.body)
     .then(() => {
       res.send('successfully inserted');
     })
@@ -55,8 +52,6 @@ app.post('/api/records', (req, res) => {
       res.send(err);
     });
 });
-
-
 
 // POST /login gets urlencoded bodies
 app.post('/login', urlencodedParser, (req, res) => {
