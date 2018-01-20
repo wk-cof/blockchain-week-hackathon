@@ -4,29 +4,50 @@ const Promise = require('bluebird');
 // custom logger
 const log = require('./logger.js');
 const express = require('express');
+const bodyParser = require('body-parser');
+const dbManager = require('./dbManager');
+const logger = require('./logger');
 
 const app = express();
+const port = process.env.PORT || 8000;
+const server = require('http').Server(app);
 
 app.use(require('helmet')()); // use helmet
 app.use(require('cors')()); // enable CORS
 // serves all static files in /public
 app.use(express.static(`${__dirname}/../public`));
-const port = process.env.PORT || 8000;
-const server = require('http').Server(app);
 
 // start server
-server.listen(port, () => {
-  log.info(`Listening on port ${port}`);
-});
+let dbInstance = dbManager(logger);
+// dbInstance.connect()
+  // .then(() => {
+    server.listen(port, () => {
+      log.info(`Listening on port ${port}`);
+    // });
+  });
 
 // 'body-parser' middleware for POST
-const bodyParser = require('body-parser');
 // create application/json parser
 const jsonParser = bodyParser.json();
 // create application/x-www-form-urlencoded parser
 const urlencodedParser = bodyParser.urlencoded({
   extended: false,
 });
+
+app.get('/api/records', (req, res) => {
+  res.send();
+});
+
+app.post('/api/records', (req, res) => {
+  dbInstance.connect()
+    .then(() => {
+      dbInstance.insertDocuments(result => {
+        res.send(result);
+      });
+    });
+});
+
+
 
 // POST /login gets urlencoded bodies
 app.post('/login', urlencodedParser, (req, res) => {
