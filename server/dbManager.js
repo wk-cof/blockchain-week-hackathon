@@ -1,3 +1,4 @@
+let fs=require("fs");
 /* dbManager - wrapper over node-mongodb driver */
 
 'use strict';
@@ -6,10 +7,11 @@ const dbManager = (logger) => {
   const log = logger;
 
   // Connection
-  const pe = process.env;
+  // const pe = process.env ;
+  let content=fs.readFileSync("mongo-auth.json", "utf8");
+  const pe = JSON.parse(content);
   // use a cloud-hosted mongo db, such as mlab.com
   const url = `mongodb://${pe.user}:${pe.password}@${pe.db_host}:${pe.db_port}/${pe.db_name}`;
-
   let db = null;
   let collection = null;
   const adminDb = null;
@@ -25,7 +27,7 @@ const dbManager = (logger) => {
         db = dbInst;
         // get existing collection, or create if doesn't exist
         // NOTE: Collections are not created until the first document is inserted
-        collection = db.collection('khan-info');
+        collection = db.collection('test');
       }).catch(err => log.error(err));
 
   // Mongo's UPSERT operation

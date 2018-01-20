@@ -14,12 +14,8 @@ app.use(express.static(`${__dirname}/../public`));
 const port = process.env.PORT || 8000;
 const server = require('http').Server(app);
 
-// boilerplate version
-const version = `Express-Boilerplate v${require('../package.json').version}`;
-
 // start server
 server.listen(port, () => {
-  log.info(version);
   log.info(`Listening on port ${port}`);
 });
 
@@ -34,13 +30,17 @@ const urlencodedParser = bodyParser.urlencoded({
 
 // POST /login gets urlencoded bodies
 app.post('/login', urlencodedParser, (req, res) => {
-  if (!req.body) return res.sendStatus(400);
+  if (!req.body) {
+    return res.sendStatus(400);
+  }
   res.send(`welcome, ${req.body.username}`);
 });
 
 // POST /api/users gets JSON bodies
 app.post('/api/users', jsonParser, (req, res) => {
-  if (!req.body) return res.sendStatus(400);
+  if (!req.body) {
+    return res.sendStatus(400);
+  }
   // create user in req.body
 });
 
