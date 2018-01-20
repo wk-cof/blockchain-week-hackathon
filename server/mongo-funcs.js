@@ -1,6 +1,16 @@
 const fs = require("fs");
-let content = fs.readFileSync("mongo-auth.json", "utf8");
-const pe = JSON.parse(content);
+let pe;
+if (process.env.MONGO_USER) {
+  pe = {
+    user: process.env.MONGO_USER ,
+    password: process.env.MONGO_PASSWORD ,
+    db_host: process.env.MONGO_HOST ,
+    db_port: process.env.MONGO_PORT ,
+    db_name: process.env.MONGO_DB_NAME
+  }
+} else {
+  pe = JSON.parse(content);
+}
 const assert = require('assert');
 
 const insertDocument = function (db, obj, callback) {
