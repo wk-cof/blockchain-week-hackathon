@@ -69,6 +69,27 @@ const dbManager = () => {
     });
   };
 
+  const read = (id) => {
+    return new Promise((resolve, reject) => {
+      MongoClient.connect(url, function (err, client) {
+        if (err) {
+          return reject(err);
+        }
+        console.log("Connected to server");
+        try {
+          const db = client.db(pe.db_name);
+          mongoFuncs.readOne(db, id, function (response) {
+            client.close();
+            resolve(response);
+          });
+        } catch (err) {
+          reject(err);
+        }
+      });
+    });
+  };
+
+
   return {
     insert,
     readAll

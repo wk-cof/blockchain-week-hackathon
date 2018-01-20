@@ -25,7 +25,6 @@ const insertDocument = function (db, obj, callback) {
     });
 }
 
-
 const readDocuments = function (db, callback) {
     // Get the documents collection
     const collection = db.collection('test');
@@ -35,6 +34,18 @@ const readDocuments = function (db, callback) {
         console.log("Found the following records");
         console.log(docs)
         callback(docs);
+    });
+}
+
+const readOne = function (db, id, callback) {
+    // Get the documents collection
+    const collection = db.collection('test');
+    // Find some documents
+    collection.find({phoneNumber: id}).toArray(function (err, doc) {
+        assert.equal(err, null);
+        console.log("Found the following records");
+        console.log(doc);
+        callback(doc);
     });
 }
 

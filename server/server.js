@@ -71,39 +71,65 @@ app.get('/api/twilio', (req, res) => {
 app.post('/api/twilio-request', (req, res) => {
   const twiml = new MessagingResponse();
 
-  if (req.body.Body == 'hello') {
-    twiml.message('Hi!');
-  } else if(req.body.Body == 'bye') {
-    twiml.message('Goodbye');
+  processMessage(req.body.Body, req.body.From)
+    .then(responseMessage => {
+      twiml.message(responseMessage);
+      res.writeHead(200, {'Content-Type': 'text/xml'});
+      res.end(twiml.toString());
+    });
+});
+
+const processMessage = (message, phoneNumber) => {
+
+  if (message.match(/^BORROW.*/i)) {
+    // BORROW\s+\d+,\s*\d+\s*,\s*\d+\s*,\s*\d+
+    let matches = message.match(/^BORROW\s+(\d+),\s*(\d+)\s*,\s*(\d+)\s*,\s*(\+?\d+)/i);
+    if (matches.length < 5) {
+      return Promise.resolve('Enter the BORROW and AMOUNT, INTEREST RATE, DAYS UNTIL DUE, LENDER MOBILE NUMBER');
+    }
+    let borrowObj = {
+      phoneNumber,
+      action: 'borrow',
+      amount: parseInt(matches[1]),
+      interestRate: parseInt(matches[2]),
+      daysUntilDue: parseInt(matches[3]),
+      lenderNumber: matches[4]
+    };
+    return dbInstance.insert(borrowObj)
+      .then(() => {
+        const returnAmount = Math.floor(borrowObj.amount * (1 + borrowObj.interestRate/100 * borrowObj.daysUntilDue / 365) * 100) / 100;
+
+        return `You want to borrow ${borrowObj.amount} with ${borrowObj.interestRate}% interest due in ${borrowObj.daysUntilDue} days.` +
+          `A total of ${returnAmount} will be due. Is that correct? YES or NO`;
+      })
   } else {
-    twiml.message(JSON.stringify(req.body));
+    return Promise.resolve('incorrect usage');
   }
 
-  res.writeHead(200, {'Content-Type': 'text/xml'});
-  res.end(twiml.toString());
-});
+};
 
-app.get('/api/records', (req, res) => {
-  dbInstance.readAll()
-    .then(result => {
-      res.send(result);
-    })
-    .catch(err => {
-      res.status(400);
-      res.send(err);
-    });
-  });
 
-app.post('/api/records', (req, res) => {
-  dbInstance.insert(req.body)
-    .then(() => {
-      res.send('successfully inserted');
-    })
-    .catch(err => {
-      res.status(400);
-      res.send(err);
-    });
-});
+// app.get('/api/records', (req, res) => {
+//   dbInstance.readAll()
+//     .then(result => {
+//       res.send(result);
+//     })
+//     .catch(err => {
+//       res.status(400);
+//       res.send(err);
+//     });
+//   });
+
+// app.post('/api/records', (req, res) => {
+//   dbInstance.insert(req.body)
+//     .then(() => {
+//       res.send('successfully inserted');
+//     })
+//     .catch(err => {
+//       res.status(400);
+//       res.send(err);
+//     });
+// });
 
 // // POST /login gets urlencoded bodies
 // app.post('/login', urlencodedParser, (req, res) => {
