@@ -6,7 +6,7 @@ const log = require('./logger.js');
 const express = require('express');
 const bodyParser = require('body-parser');
 const dbManager = require('./dbManager');
-const logger = require('./logger');
+// const logger = require('./logger');
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -18,7 +18,7 @@ app.use(require('cors')()); // enable CORS
 app.use(express.static(`${__dirname}/../public`));
 
 // start server
-let dbInstance = dbManager(logger);
+let dbInstance = dbManager();
   server.listen(port, () => {
     log.info(`Listening on port ${port}`);
   });
@@ -36,9 +36,16 @@ app.get('/api/records', (req, res) => {
 });
 
 app.post('/api/records', (req, res) => {
-  dbInstance.insert()
+  // if (!req.body) {
+  //   return res.sendStatus(400);
+  // }
+  dbInstance.insert({foo: 'bar'})
     .then(() => {
       res.send('successfully inserted');
+    })
+    .catch(err => {
+      res.status(400);
+      res.send(err);
     });
 });
 

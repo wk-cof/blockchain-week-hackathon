@@ -17,34 +17,35 @@ const dbManager = () => {
   const adminDb = null;
 
 
-  let insert = () => {
+  let insert = (obj) => {
     return new Promise(function (resolve, reject) {
       MongoClient.connect(url, function(err, client) {
         if(err) {
           return reject(err);
         }
-        console.log("Connected successfully to server");
-
-        const db = client.db(pe.db_name);
-        insertDocuments(db, function() {
-          client.close();
-          resolve();
-        });
+        console.log("Connected to server");
+        try {
+          const db = client.db(pe.db_name);
+          insertDocument(db, obj, function() {
+            client.close();
+            resolve();
+          });
+        } catch(err) {
+          reject(err);
+        }
       });
     });
   };
 
-  const insertDocuments = function(db, callback) {
+  // let read
+
+  const insertDocument = function(db, obj, callback) {
     // Get the documents collection
     const collection = db.collection(pe.collection);
     // Insert some documents
-    collection.insertMany([
-      {a : 1}, {a : 2}, {a : 3}
-    ], function(err, result) {
+    collection.insert(obj, function(err, result) {
       assert.equal(err, null);
-      assert.equal(3, result.result.n);
-      assert.equal(3, result.ops.length);
-      console.log("Inserted 3 documents into the collection");
+      console.log("Inserteded " + JSON.stringify(obj));
       callback(result);
     });
   }
