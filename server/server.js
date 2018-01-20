@@ -7,6 +7,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const dbManager = require('./dbManager');
 const twilio = require('twilio');
+const MessagingResponse = twilio.twiml.MessagingResponse;
+
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -18,7 +20,7 @@ app.use(require('cors')()); // enable CORS
 app.use(express.static(`${__dirname}/../public`));
 
 const fs = require("fs");
-let accountSid = process.env.ACCOUNT_SID || twilioLoginInfo.accountSid;
+let accountSid;
 let authToken;
 
 if (process.env.ACCOUNT_SID) {
@@ -41,14 +43,15 @@ let dbInstance = dbManager();
 
 // 'body-parser' middleware for POST
 // create application/json parser
-const jsonParser = bodyParser.json();
-// create application/x-www-form-urlencoded parser
-const urlencodedParser = bodyParser.urlencoded({
-  extended: false,
-});
+// const jsonParser = bodyParser.json();
+// // create application/x-www-form-urlencoded parser
+// const urlencodedParser = bodyParser.urlencoded({
+//   extended: false,
+// });
+app.use(bodyParser());
 
 app.get('/api/twilio', (req, res) => {
-  let client = new twilio(twilioLoginInfo.accountSid, twilioLoginInfo.authToken);
+  let client = new twilio(accountSid, authToken);
   client.messages.create({
     body: 'Hello from Node',
     to: '+447469455030',  // Text this number
@@ -65,6 +68,21 @@ app.get('/api/twilio', (req, res) => {
   });
 })
 
+app.post('/api/twilio-request', (req, res) => {
+  const twiml = new MessagingResponse();
+
+  if (req.body.Body == 'hello') {
+    twiml.message('Hi!');
+  } else if(req.body.Body == 'bye') {
+    twiml.message('Goodbye');
+  } else {
+    twiml.message('No Body param match, Twilio sends this in the request to your server.');
+  }
+
+  res.writeHead(200, {'Content-Type': 'text/xml'});
+  res.end(twiml.toString());
+});
+
 app.get('/api/records', (req, res) => {
   dbInstance.readAll()
     .then(result => {
@@ -76,7 +94,7 @@ app.get('/api/records', (req, res) => {
     });
   });
 
-app.post('/api/records', jsonParser, (req, res) => {
+app.post('/api/records', (req, res) => {
   dbInstance.insert(req.body)
     .then(() => {
       res.send('successfully inserted');
@@ -87,21 +105,21 @@ app.post('/api/records', jsonParser, (req, res) => {
     });
 });
 
-// POST /login gets urlencoded bodies
-app.post('/login', urlencodedParser, (req, res) => {
-  if (!req.body) {
-    return res.sendStatus(400);
-  }
-  res.send(`welcome, ${req.body.username}`);
-});
+// // POST /login gets urlencoded bodies
+// app.post('/login', urlencodedParser, (req, res) => {
+//   if (!req.body) {
+//     return res.sendStatus(400);
+//   }
+//   res.send(`welcome, ${req.body.username}`);
+// });
 
-// POST /api/users gets JSON bodies
-app.post('/api/users', jsonParser, (req, res) => {
-  if (!req.body) {
-    return res.sendStatus(400);
-  }
-  // create user in req.body
-});
+// // POST /api/users gets JSON bodies
+// app.post('/api/users', jsonParser, (req, res) => {
+//   if (!req.body) {
+//     return res.sendStatus(400);
+//   }
+//   // create user in req.body
+// });
 
 
 // ex. using 'node-fetch' to call JSON REST API

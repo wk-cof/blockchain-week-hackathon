@@ -9,7 +9,8 @@ if (process.env.MONGO_USER) {
     db_name: process.env.MONGO_DB_NAME
   }
 } else {
-  pe = JSON.parse(content);
+    let content = fs.readFileSync("mongo-auth.json", "utf8");
+    pe = JSON.parse(content);
 }
 const assert = require('assert');
 

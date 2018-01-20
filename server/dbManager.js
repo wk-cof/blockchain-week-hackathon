@@ -7,7 +7,6 @@ const dbManager = () => {
 
   // Connection
   // const pe = process.env ;
-  let content = fs.readFileSync("mongo-auth.json", "utf8");
   let pe;
   if (process.env.MONGO_USER) {
     pe = {
@@ -18,6 +17,7 @@ const dbManager = () => {
       db_name: process.env.MONGO_DB_NAME
     }
   } else {
+    let content = fs.readFileSync("mongo-auth.json", "utf8");
     pe = JSON.parse(content);
   }
 
