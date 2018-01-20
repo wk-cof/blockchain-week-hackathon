@@ -37,7 +37,37 @@ const dbManager = () => {
     });
   };
 
-  // let read
+  const readDocuments = function(db, callback) {
+      // Get the documents collection
+      const collection = db.collection(pe.collection);
+      // Find some documents
+      collection.find({}).toArray(function(err, docs) {
+          assert.equal(err, null);
+          console.log("Found the following records");
+          console.log(docs)
+          callback(docs);
+      });
+  }
+
+  const readAll = () => {
+    return new Promise((resolve, reject) => {
+      MongoClient.connect(url, function(err, client) {
+        if(err) {
+          return reject(err);
+        }
+        console.log("Connected to server");
+        try {
+          const db = client.db(pe.db_name);
+          readDocuments(db, function(response) {
+            client.close();
+            resolve(response);
+          });
+        } catch(err) {
+          reject(err);
+        }
+      });
+    });
+  };
 
   const insertDocument = function(db, obj, callback) {
     // Get the documents collection
@@ -51,7 +81,8 @@ const dbManager = () => {
   }
 
   return {
-    insert
+    insert,
+    readAll
   };
 };
 

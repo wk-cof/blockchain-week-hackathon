@@ -32,8 +32,15 @@ const urlencodedParser = bodyParser.urlencoded({
 });
 
 app.get('/api/records', (req, res) => {
-  res.send('success');
-});
+  dbInstance.readAll()
+    .then(result => {
+      res.send(result);
+    })
+    .catch(err => {
+      res.status(400);
+      res.send(err);
+    });
+  });
 
 app.post('/api/records', (req, res) => {
   // if (!req.body) {
