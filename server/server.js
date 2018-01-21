@@ -36,7 +36,6 @@ if (process.env.ACCOUNT_SID) {
 const incorrectUsage = 'Sorry, we do not recognise that message.' +
   'To borrow money send BORROW and AMOUNT, INTEREST RATE, DAYS UNTIL DUE, LENDER MOBILE NUMBER';
 const twilioNumber = '+442033895302';
-const fakeTransID = '64721325812583';
 //---------------------------------------------------------------------------
 // start server
 let dbInstance = dbManager();

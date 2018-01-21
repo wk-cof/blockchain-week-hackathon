@@ -1,3 +1,4 @@
+const sampleTransID = '2F27A1';
 const processYes = (dbInstance, phoneNumber, twilioNumber, sendTwilioMessage) => {
     return dbInstance.read(phoneNumber)
         .then(actionObjList => {
@@ -19,7 +20,7 @@ const processYes = (dbInstance, phoneNumber, twilioNumber, sendTwilioMessage) =>
                             return 'Thank you, the lender is notified';
                         });
                 case 'lend':
-                    let commonMsg = `Congratulations, the transaction has been recorded, please exchange money.`;
+                    let commonMsg = `Congratulations, the transaction has been recorded, please exchange money. To repay both parties need to text ${sampleTransID} REPAY and AMOUNT. ` ;
                     let borrowerMsg = ` To receive positive Karma complete the transaction in ${actionObj.daysUntilDue} days.  Would you like a reminder? YES or NO`;
                     return registerInBlockchain()
                         .then(() => {
