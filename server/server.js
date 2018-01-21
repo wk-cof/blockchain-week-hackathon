@@ -8,7 +8,7 @@ const bodyParser = require('body-parser');
 const dbManager = require('./dbManager');
 const twilio = require('twilio');
 const MessagingResponse = twilio.twiml.MessagingResponse;
-
+const processKeywords = require('./process-keywords');
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -36,6 +36,7 @@ if (process.env.ACCOUNT_SID) {
 const incorrectUsage = 'Sorry, we do not recognise that message.' +
   'To borrow money send BORROW and AMOUNT, INTEREST RATE, DAYS UNTIL DUE, LENDER MOBILE NUMBER';
 const twilioNumber = '+442033895302';
+const fakeTransID = '64721325812583';
 //---------------------------------------------------------------------------
 // start server
 let dbInstance = dbManager();
@@ -48,11 +49,11 @@ app.use(bodyParser());
 const sendTwilioMessage = (messageBody, fromNumber, toNumber) => {
   let client = new twilio(accountSid, authToken);
   return client.messages.create({
-    body: messageBody,
-    from: fromNumber,
-    to: toNumber
+      body: messageBody,
+      from: fromNumber,
+      to: toNumber
   });
-}
+};
 
 const registerInBlockchain = () => {
   return Promise.resolve();
@@ -87,74 +88,11 @@ app.post('/api/twilio-request', (req, res) => {
 const processMessage = (message, phoneNumber) => {
   message = message.toLowerCase();
   if (message.match(/^borrow.*/i)) {
-    // BORROW\s+\d+,\s*\d+\s*,\s*\d+\s*,\s*\d+
-    let matches = message.match(/^borrow\s+(\d+),\s*(\d+)\s*,\s*(\d+)\s*,\s*(\+?\d+)/i);
-    if (matches.length < 5) {
-      return Promise.resolve('Enter the BORROW and AMOUNT, INTEREST RATE, DAYS UNTIL DUE, LENDER MOBILE NUMBER');
-    }
-    let borrowObj = {
-      phoneNumber,
-      action: 'borrow',
-      amount: parseInt(matches[1]),
-      interestRate: parseInt(matches[2]),
-      daysUntilDue: parseInt(matches[3]),
-      lenderNumber: matches[4]
-    };
-    return dbInstance.insert(borrowObj)
-      .then(() => {
-        const returnAmount = Math.floor(borrowObj.amount * (1 + borrowObj.interestRate/100 * borrowObj.daysUntilDue / 365) * 100) / 100;
-
-        return `You want to borrow ${borrowObj.amount} with ${borrowObj.interestRate}% interest due in ${borrowObj.daysUntilDue} days.` +
-          `A total of ${returnAmount} will be due. Is that correct? YES or NO`;
-      });
+    return processKeywords.processBorrow(dbInstance, message, phoneNumber);
   } else if (message.match(/^yes/i)) {
-    return dbInstance.read(phoneNumber)
-      .then(actionObjList => {
-        if (!actionObjList) {
-          return incorrectUsage;
-        }
-        let actionObj = actionObjList[0];
-        switch (actionObj.action) {
-          case 'borrow':
-            return dbInstance.update(actionObj.phoneNumber,
-              {borrowerNumber: actionObj.phoneNumber, phoneNumber: actionObj.lenderNumber, action: 'lend'})
-              .then(() => {
-                return sendTwilioMessage(`A borrower with Karma rating of 5 would like to borrow ${actionObj.amount} at ` +
-                  `${actionObj.interestRate}% interest for ${actionObj.daysUntilDue} days.Would you like to accept YES or NO`,
-                  twilioNumber,
-                  actionObj.lenderNumber)
-                })
-                .then(() => {
-                  return 'Thank you, the lender is notified';
-                });
-          case 'lend':
-            let commonMsg = `Congratulations, the transaction has been recorded, please exchange money.`;
-            let borrowerMsg = ` To receive positive Karma complete the transaction in ${actionObj.daysUntilDue} days.  Would you like a reminder? YES or NO`;
-            return registerInBlockchain()
-              .then(() => {
-                return dbInstance.update(actionObj.phoneNumber, {action: 'reminder', phoneNumber: actionObj.borrowerNumber});
-              })
-              .then(() => {
-                return sendTwilioMessage(commonMsg + borrowerMsg, twilioNumber, actionObj.borrowerNumber);
-              })
-              .then(() => {
-                return commonMsg;
-              });
-
-          case 'reminder':
-            return dbInstance.remove(phoneNumber)
-              .then(() => {
-                return 'Thank you, we will send you a reminder 14, 7, 3 and 1 day before repayment is due. To repay both you and the lender need to text TRANS REPAY and AMOUNT';
-              });
-          default:
-            return incorrectUsage;
-        }
-      });
+    return processKeywords.processYes(dbInstance, phoneNumber, twilioNumber, sendTwilioMessage);
   } else if (message.match(/^no/i)) {
-    return dbInstance.remove(phoneNumber)
-      .then(() => {
-        return 'Transaction canceled';
-      });
+    return processKeywords.processNo(dbInstance, phoneNumber);
   } else {
     return Promise.resolve(incorrectUsage);
   }
